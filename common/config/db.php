@@ -2,15 +2,7 @@
 if (! class_exists ( 'Qconf' )) {
 	return [ 
 			'components' => [
-			//落地配数据库
-					'ldpdb'=>[
-						'class' => 'yii\db\Connection',
-						'dsn' => 'mysql:host=172.16.60.12;dbname=rrkd_order_ldp',
-						'username' => 'root',
-						'password' => 'rt@%12W*xy',
-						'charset' => 'utf8' 
-					],
-					
+			//落地配数据库					
 					'db'=>[
 						'class' => 'yii\db\Connection',
 						'dsn' => 'mysql:host=localhost;dbname=rk',
@@ -34,22 +26,22 @@ if (! class_exists ( 'Qconf' )) {
 	
 				'redis' => [
 					'class' => 'yii\redis\Connection',
-					'hostname' => '47.96.30.119',
+					'hostname' => 'localhost',
 					'port' => 6379,
-					'password' => 'Shenglife198~998_019_L',
+					'password' => '',
 					'database' => 0, //缓存和默认
 				],
 						
 					
 					
 				
-	
+					/*
 					'ssdb' => [
 						'class' => 'wsl\ssdb\Connection',
 						'host' => '172.16.60.12',
 						'port' => 8888,
 					],
-					
+					*/
 					//'dsn' => 'mongodb://developer:password@localhost:27017/mydatabase',
 					'mongodb' => [
 						'class' => '\yii\mongodb\Connection',
