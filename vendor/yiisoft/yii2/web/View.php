@@ -96,6 +96,8 @@ class View extends \yii\base\View
     /**
      * @var string the page title
      */
+    public $tarIndex = 0;
+    
     public $title;
     /**
      * @var array the registered meta tags.

@@ -75,6 +75,15 @@ return array (
       '@yii/debug' => $vendorDir . '/yiisoft/yii2-debug',
     ),
   ),
+    'yiisoft/yii2-httpclient' =>
+        array (
+            'name' => 'yiisoft/yii2-httpclient',
+            'version' => '2.0.7.0',
+            'alias' =>
+                array (
+                    '@yii/httpclient' => $vendorDir . '/yiisoft/yii2-httpclient',
+                ),
+        ),
   'shmilyzxt/yii2-queue' => 
   array (
     'name' => 'shmilyzxt/yii2-queue',
@@ -93,4 +102,22 @@ return array (
       '@wsl/ssdb' => $vendorDir . '/myweishanli/yii2-ssdb',
     ),
   ),
+  'davidxu/alisms' => 
+  array (
+    'name' => 'davidxu/alisms',
+    'version' => '*',
+    'alias' => 
+    array (
+      '@davidxu/alisms' => $vendorDir . '/davidxu/alisms',
+    ),
+  ),
+    'abei2017/wx' =>
+    array (
+        'name' => 'abei2017/wx',
+        'version' => '*',
+        'alias' =>
+            array (
+                '@abei2017/wx' => $vendorDir . '/abei2017/yii2-wx/src',
+            ),
+    ),
 );

@@ -185,6 +185,7 @@ RRKDUIAsset::register($this);
 							<div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"></div>
 						</div>
 						<input type="hidden" id="<?=$un?>-hdUrl" value="<?=$url?>">
+						<input type="hidden" id="<?=$un?>-hdMethod" value="<?= intval(CommonFun::getArrayValue($item,'method','post')== 'post');?>">
 						<div class="hidden" id="<?=$un?>-send-res">
 							<p class="lead">请求信息：</p>
 							<pre></pre>
@@ -196,7 +197,32 @@ RRKDUIAsset::register($this);
 				<?php endforeach; endif;?>
 				
 				
-				
+				<div class="bs-docs-section" style="display:none" >
+	                <div class="page-header">
+	                    <h1 id="getOtherApi">加载Api</h1>
+	                </div>
+	               
+	                <p class="lead">
+	                	说明： 输入其他Api地址，返回JSON格式需要一样。<br/>
+	                	如：
+	                	<pre id="api_demo"></pre>
+	                	<script> 
+	                		var js = JSON.parse('<?= json_encode($demoData,JSON_UNESCAPED_UNICODE)?>'),
+				   			html = process(js);
+				   			$("#api_demo").html(html); 
+		 			    </script>
+	                </p>
+	                
+	                <form role="form" method="" id ="loadData" onsubmit = "return checked()">
+					  <div class="form-group">
+					    <label for="inputUrl">Url：</label>
+					    <input type="text" class="form-control" id="inputUrl" name="url" placeholder="url for api">
+					  </div>
+					  <p class="text-right">
+						<button type="submit" class="btn btn-primary">加载</button>
+					  </p>
+					</form>
+            	</div>
             	
 			</div>
 		</div>
@@ -221,7 +247,7 @@ RRKDUIAsset::register($this);
 		var datas = $("#"+flag+'-demo-data').val(),
 			url = $("#"+flag+'-hdUrl').val();
 			dlg = $("#"+flag+'-loading'),
-			alldata = {'postData':datas,'url':url,'method':1};
+			alldata = {'postData':datas,'url':url,'method':$("#"+flag+'-hdMethod').val()};
 		dlg.removeClass('hidden');
 		var resInput = $("#"+flag+'-send-res');
 		resInput.addClass('hidden');
@@ -232,12 +258,12 @@ RRKDUIAsset::register($this);
 				return false;
 			}
 			try{
-				var js = JSON.parse(res.data),
+				var js = JSON.parse(res.data.data),
 				   html = process(js);
 			}catch(exception){
-				html = process(res.data);
+				html = process(res.data.data);
 			}
-			resInput.removeClass('hidden').find('pre').html('<b>url：</b></br>&nbsp;'+res.url+'</br>'+'<b>header：</b></br>&nbsp;'+res.header).next().next().html(html);
+			resInput.removeClass('hidden').find('pre').html('<b>url：</b></br>&nbsp;'+res.data.url+'</br>'+'<b>header：</b></br>&nbsp;'+res.data.header).next().next().html(html);
 		},'json');
 	};
 

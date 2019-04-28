@@ -63,7 +63,7 @@ class RRKDApiAction extends Action {
 	
 	private function getDemoData(){
 		$str = '{"api":{"name":"商家API","description":"这里是api的说明，包含注意事项以及接口的签名等规则。","setHeader":1,"host":"http:\/\/127.0.0.18:8080","cache":1,"version":"1.0.0","groups":{"A":"用户模块","B":"支付模块","C":"公用模块"},"commonResponse":{"status":{"require":1,"type":"int","desc":"状态 0 失败  1成功"},"msg":{"require":1,"type":"string","desc":"错误消息"}}},"groups":{"A":{"test\/login":{"name":"登录TEST","desc":"用户登录","method":"post","group":"A","params":{"token":{"desc":"令牌","type":"string","default":12}},"response":{"userInfo":{"desc":"用户信息","type":"object","item":{"userId":{"desc":"ID"},"userName":{"desc":"用户名"},"token":{"desc":"令牌"},"shopLocation":{"desc":"地址信息","type":"object","item":{"province":{"desc":"省"}}}}}}},"user\/default\/login":{"name":"登录","desc":"用户登录","method":"post","group":"A","params":{"userName":{"desc":"用户","type":"string","require":1,"default":"15681130807"},"userPwd":{"desc":"密码","require":1,"type":"string","default":"Lm2300705"}},"response":{"userInfo":{"desc":"用户信息","type":"object","item":{"userId":{"desc":"ID"},"userName":{"desc":"用户名"},"token":{"desc":"令牌"},"shopLocation":{"desc":"地址信息","type":"object","item":{"province":{"desc":"省"}}}}}}}},"C":{"user\/account\/goodscategory":{"name":"获取商品类别","desc":"获取商品类别C03","method":"post","group":"C","response":{"categories":{"desc":"类别数据","type":"object","item":{"classId":{"desc":"类别ID"},"name":{"desc":"类别名字"}}}}}}}}';
-		return [];
+		return json_decode($str,1);
 	}
 	
 	
@@ -91,7 +91,7 @@ class RRKDApiAction extends Action {
 		$request = \Yii::$app->request;
 		$postData = $request->post ( 'postData', [ ] );
 		$method = $request->post ( 'method', 1 ); // TODO 预留GET方式的时候组织参数
-		
+
 		$url = $request->post ( 'url', '' );
 		if (empty ( $url )) {
 			return CommonFun::returnFalse ( '缺少POST地址' );
@@ -101,7 +101,13 @@ class RRKDApiAction extends Action {
 			return CommonFun::returnFalse ( '非JSON数据' );
 		}
 		$header = $this->getHeader ();
-		$postRes = CommonFun::curlPost ( $url, json_encode ( $postDecodeData ), 10, $header, false );
+		if($method){
+			$postRes = CommonFun::curlPost ( $url, json_encode ( $postDecodeData ), 10, $header, false );
+		}else{
+			$url .= '?'.$this->getStr($postDecodeData);
+			$postRes = CommonFun::curlGet( $url, 10, $header, 1 );
+		}
+		
 		CommonFun::log('请求地址:'.$url.'，header：'.json_encode($header,JSON_UNESCAPED_UNICODE).'，参数：'.json_encode ( $postDecodeData ,JSON_UNESCAPED_UNICODE).'，返回：'.$postRes,'sendData','RRKDApiAction');
 		
 		// CommonFun::p($postRes);
@@ -110,6 +116,17 @@ class RRKDApiAction extends Action {
 				'url' => $url,
 				'header' => ! empty ( $header ) ? implode ( ';', $header ) : '' 
 		] );
+	}
+	
+	private function getStr($data = []){
+		if(empty($data)){
+			return '';
+		}
+		$res = [];
+		foreach ($data as $k=>$item){
+			$res[] = $k.'='.$item;
+		}
+		return implode('&', $res);
 	}
 	
 	/**
@@ -147,7 +164,7 @@ class RRKDApiAction extends Action {
 	 * @return string
 	 */
 	private function getCacheName() {
-		return md5 ( \Yii::$app->request->hostInfo . 'getYmlApi' );
+		return  'APIACTION_'. date('Y-m-d') . '_getYmlApi' ;
 	}
 	
 	/**
@@ -166,7 +183,6 @@ class RRKDApiAction extends Action {
 			return [ ];
 		}
 		$info = $this->getYmlInfo ( $path ); // 接口说明 预留输出参数和输入参数通过别名载入
-		/*
 		$cache = \Yii::$app->cache;
 		$cacheName = $this->getCacheName ();
 		if ($info && isset ( $info ['api'] )) {
@@ -179,7 +195,6 @@ class RRKDApiAction extends Action {
 				}
 			}
 		}
-		*/
 		$groupInfo = isset ( $info ['api'] ) && isset ( $info ['api'] ['groups'] ) ? $info ['api'] ['groups'] : [ ];
 		$reGroup = [ ];
 		
@@ -203,7 +218,7 @@ class RRKDApiAction extends Action {
 		$return = array_merge ( $info, [ 
 				'groups' => $reGroup 
 		] );
-		//$cache->set ( $cacheName, $return );
+		$cache->set ( $cacheName, $return ,24*3600);
 		return $return;
 	}
 	
