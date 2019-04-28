@@ -32,8 +32,7 @@ return array(
 
 	'callmez\\wechat\\sdk\\' => array($vendorDir . '/callmez/yii2-wechat-sdk'),
 		
+	'gmars\\sms\\' => array($vendorDir . '/gmars/yii2-sms'),
+    'abei2017\\wx\\' => array($vendorDir . '/abei2017/yii2-wx'),
 	'ElemeOpenApi\\' => array($vendorDir . '/ElemeOpenApi'),
-		
-		
-		
 );
